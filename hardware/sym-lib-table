@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "the-intercept-2025")(type "KiCad")(uri "C:/Users/jrozner/src/github.com/jrozner/the-intercept-2025/hardware/the-intercept-2025.kicad_sym")(options "")(descr ""))
+)
