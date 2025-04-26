@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "the-intercept-2025")(type "KiCad")(uri "${KIPRJMOD}/the-intercept-2025.pretty")(options "")(descr ""))
+)
