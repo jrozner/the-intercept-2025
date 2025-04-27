@@ -1,4 +1,5 @@
 
+
 #include "mining.h"
 
 
@@ -68,4 +69,33 @@ void mineRugCoin(void)
     printf("Now back to the mines with you!\n");
     printf("flag{th3_ch1ldr3n_y34rn_f0r_th3_m1n3s}\n");
 }
+
+typedef struct block_t
+{
+    uint8_t hash[16];
+    struct block_t *next;
+    struct block_t *prev;
+} Block;
+
+void mineInflatoCash()
+{
+    const char *msg = "hello world";
+    uint8_t hash[16];
+    MD5_CTX ctx;
+
+    md5_init(&ctx);
+    md5_update(&ctx, msg, strlen(msg));
+    md5_final(&ctx, hash);
+
+    printf("MD5 = ");
+    for (int i = 0; i < 16; i++)
+        printf("%02x", hash[i]);
+    printf("\n");       
+
+
+}
+
+
+
+
 
