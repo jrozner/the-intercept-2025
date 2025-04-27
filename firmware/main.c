@@ -12,13 +12,16 @@ int main() {
     buf[0] = getchar(); // first getchar always null ?
 
     printStartup();
+    walletInit();
 
     while (true) {
         memset(buf, 0, MAX_INPUT_LEN);
-        if (current_menu == mainMenu) {
-            printf("hodlr> ");
-        } else {
+        if (current_menu == miningMenu) {
+            printf("miner> ");
+        } else if (current_menu == advancedMenu) {
             printf("admin> ");
+        } else { // default
+            printf("hodlr> ");
         }
         readInput(&buf[0], MAX_INPUT_LEN);
         printf("\n"); 

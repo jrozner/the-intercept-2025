@@ -4,6 +4,9 @@
 menuItem mainMenu[MAX_MENU_ITEMS] = {
  {"help", "Prints menu help message", ENABLED, printHelp},
  {"login", "Login to administrator console", ENABLED, adminLogin},
+ {"pub_show", "Show a public key for a given wallet", ENABLED, adminShowPub},
+ {"pub_reset", "Reset a public key for a given wallet", ENABLED, adminResetPub},
+ {"balance", "Show wallet balances", ENABLED, adminShowWallets},
  {"mining", "Mine various sidecoins", ENABLED, miningLogin}, // TODO
  {"TODO2", "flag{test_flag}", DISABLED, NULL}, // TODO
 };
@@ -20,8 +23,36 @@ menuItem miningMenu[MAX_MENU_ITEMS] = {
 };
 
 menuItem *current_menu = mainMenu;
+cryptoCoin myWallet[MAX_WALLETS] = {};
 
+void walletInit(void) {
+    coinInit(0, "rugCoin");
+    coinInit(1, "xferCoin");
+    coinInit(2, "xferCoin");
+    coinInit(3, "flagCoin");
+//    memcpy(myWallet[3].privkey, 0, MAX_KEY_LEN);
+//    strcpy(myWallet[3].privkey, "flag{a_fl4g_by_anY_0ther_n4m3}");
+}
 
+void coinNewKey(char *key_addr) {
+    uint16_t i;
+    for (i=0; i<MAX_KEY_LEN-1; i++) {
+        key_addr[i] = 65 + (rand()%26);
+    }
+    key_addr[MAX_KEY_LEN-1] = '\0';
+}
+
+void coinInit(uint8_t wallet_idx, char *name) {
+    // add new wallet
+    strcpy(myWallet[wallet_idx].name, name);
+    coinNewKey(myWallet[wallet_idx].privkey);
+    coinNewKey(myWallet[wallet_idx].pubkey);
+    myWallet[wallet_idx].amount = 10;
+}
+
+void coinTransfer(cryptoCoin *src, cryptoCoin *dest, uint16_t amount) {
+    // move coins from one wallet to another of the same type
+}
 
 void adminLogin(void) {
 
@@ -56,6 +87,56 @@ void adminLogin(void) {
         printf("ACCESS GRANTED!\n");
         current_menu = advancedMenu;
     } 
+}
+
+void adminResetPub(void) {
+    char buf[10];
+    readInput(buf, 5);
+    uint8_t wallet_idx = atoi(buf);
+    if (wallet_idx >= MAX_WALLETS) {
+        printf("[!] Invalid wallet index entered...aborting\n");
+    }
+
+    // regenerate a public key
+    if (strlen(myWallet[wallet_idx].name) != 0) {
+        coinNewKey(myWallet[wallet_idx].pubkey);
+        printf("Wallet slot %02u pubkey reset, now:\n  %.30s[...]\n", wallet_idx, myWallet[wallet_idx].pubkey);
+    } else {
+        printf("[!] Can't reset a pubkey for an empty wallet slot!\n");
+    }
+}
+
+void adminShowPub(void) {
+    char buf[10];
+    readInput(buf, 5);
+    uint8_t wallet_idx = atoi(buf);
+    if (wallet_idx >= MAX_WALLETS) {
+        printf("[!] Invalid wallet index entered...aborting\n");
+    }
+    // show a public key
+    if (strlen(myWallet[wallet_idx].name) != 0) {
+        printf("Wallet slot %02u pubkey:\n", wallet_idx);
+        uint8_t i;
+        for (i=0; i<(MAX_KEY_LEN/32); i++) {
+            printf("  %.32s\n", myWallet[wallet_idx].pubkey[i*32]);
+        }
+    } else {
+        printf("[!] Can't show pubkey for an empty wallet slot!\n");
+    }
+}
+
+void adminShowWallets(void) {
+    // show details of all wallets with priv key redacted
+    printf("Current wallet balances:\n\n");
+    printf("  ## | NAME       | NUM | PUBKEY | PRIVKEY\n");
+    uint8_t i;
+    for (i=0; i<MAX_WALLETS; i++) {
+        if (strlen(myWallet[i].name) != 0) {
+            printf("  %02u: %08s | %d | Pub: %.8s[...] | Prv: %.8s[...]\n", i, myWallet[i].name, myWallet[i].amount, myWallet[i].pubkey, myWallet[i].privkey);
+        } else {
+            printf("  %02u: NULL\n", i);
+        }
+    }
 }
 
 void adminLogout(void) {
