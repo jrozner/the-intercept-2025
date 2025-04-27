@@ -12,7 +12,7 @@ if [ "$?" == "0" ]; then
         if [ "$pico_path" == "" ]; then
             pico_path="./_deps/picotool/picotool" 
         fi
-        sudo $pico_path load firmware.elf
+        sudo $pico_path load -f firmware.elf
     fi
 fi
 
