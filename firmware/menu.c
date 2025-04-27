@@ -15,6 +15,7 @@ menuItem advancedMenu[MAX_MENU_ITEMS] = {
 
 menuItem miningMenu[MAX_MENU_ITEMS] = {
  {"rugcoin", "Mine some RugCoin", ENABLED, mineRugCoin},
+ {"inflatocash", "Mine some InflatoCash", ENABLED, mineInflatoCash},
  {"back", "Go back to main menu", ENABLED, miningLogout},
 };
 
