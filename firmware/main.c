@@ -4,53 +4,42 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_INPUT_LEN (100)
-
-void read_input(char *buf, uint16_t len) {
-    char c;
-    uint16_t i=0;
-
-    if (len > MAX_INPUT_LEN) {
-        len = MAX_INPUT_LEN;
-    }
-    while (1) {
-        c = getchar();
-        if (c != '\n' && c != '\r' && c != '\0' && (i < len-2)) {
-            buf[i++] = c;
-        } else {
-            buf[i] = '\0';
-            break;
-        }
-    }
-}
-
-void millis_delay(uint32_t wait_ms) {
-    // "nonblocking" ms delay
-    uint32_t prev_time = to_ms_since_boot(get_absolute_time());
-    while (to_ms_since_boot(get_absolute_time()) - prev_time < wait_ms) {
-    }
-}
+#include "config.h"
+#include "menu.h"
+#include "menu.c"
 
 int main() {
     stdio_init_all();
     stdio_flush();
 
     char buf[MAX_INPUT_LEN];
-    millis_delay(3000);
-    char dummy = getchar(); // first getchar always null ?
+    millis_delay(3000); // startup delay so first prints are seen on serial terminal
+    buf[0] = getchar(); // first getchar always null ?
 
-    printf("HELLO WORLD STARTUP0\n");
-    printf("HELLO WORLD STARTUP1\n");
-    printf("HELLO WORLD STARTUP2\n");
-    printf("HELLO WORLD STARTUP3\n");
-    printf("HELLO WORLD STARTUP4\n");
-    printf("HELLO WORLD STARTUP5\n");
+    printStartup();
 
     while (true) {
         memset(buf, 0, MAX_INPUT_LEN);
         printf(">>> ");
-        read_input(&buf[0], MAX_INPUT_LEN);
-        printf("-cmd \"%s\"\n", buf);
+        readInput(&buf[0], MAX_INPUT_LEN);
+
+        uint8_t i;
+        for (i=0; i<MAX_MENU_ITEMS; i++) {
+            if (mainMenu[i].name != NULL && mainMenu[i].visible) {
+                printf("Checking %s...\n", mainMenu[i].name);
+                if (strcmp(mainMenu[i].name, buf) == 0) {
+                    printf("found match\n");
+                    if (mainMenu[i].func != NULL) {
+                        (mainMenu[i].func)();
+                        break; // parsed command - can exit early
+                    } else {
+                        printf("[!] Command not implemented\n");
+                        break; // parsed command - can exit early
+                    }
+                }
+            } 
+        }
+
         sleep_ms(50);
     }
     return 0;

@@ -1,5 +1,5 @@
 keys/
 build/
-.idea
+*.idea
 .*.swp
-.pyc
+*.pyc
