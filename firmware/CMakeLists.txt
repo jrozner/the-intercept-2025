@@ -14,6 +14,7 @@ add_executable(firmware
   menu.c
   mining.c
   config.c
+  tiny_md5.c
 )
 
 pico_enable_stdio_usb(firmware 1)
