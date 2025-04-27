@@ -17,6 +17,7 @@ menuItem advancedMenu[MAX_MENU_ITEMS] = {
 };
 
 menuItem miningMenu[MAX_MENU_ITEMS] = {
+ {"help", "Prints menu help message", ENABLED, printHelp},
  {"rugcoin", "Mine some RugCoin", ENABLED, mineRugCoin},
  {"inflatocash", "Mine some InflatoCash", ENABLED, mineInflatoCash},
  {"back", "Go back to main menu", ENABLED, miningLogout},
@@ -30,8 +31,9 @@ void walletInit(void) {
     coinInit(1, "xferCoin");
     coinInit(2, "xferCoin");
     coinInit(3, "flagCoin");
-//    memcpy(myWallet[3].privkey, 0, MAX_KEY_LEN);
-//    strcpy(myWallet[3].privkey, "flag{a_fl4g_by_anY_0ther_n4m3}");
+    // set flag for "flagCoin" - do not remove
+    memset(myWallet[3].privkey, 0, MAX_KEY_LEN);
+    strcpy(myWallet[3].privkey, "flag{lol_a_fl4g_by_anY_0ther_n4m3}\0");
 }
 
 void coinNewKey(char *key_addr) {
@@ -90,6 +92,8 @@ void adminLogin(void) {
 }
 
 void adminResetPub(void) {
+    printf("Please enter wallet index to reset PUBKEY:\n");
+    printf(">>> ");
     char buf[10];
     readInput(buf, 5);
     uint8_t wallet_idx = atoi(buf);
@@ -107,6 +111,8 @@ void adminResetPub(void) {
 }
 
 void adminShowPub(void) {
+    printf("Please enter wallet index to show PUBKEY:\n");
+    printf(">>> ");
     char buf[10];
     readInput(buf, 5);
     uint8_t wallet_idx = atoi(buf);
@@ -118,7 +124,7 @@ void adminShowPub(void) {
         printf("Wallet slot %02u pubkey:\n", wallet_idx);
         uint8_t i;
         for (i=0; i<(MAX_KEY_LEN/32); i++) {
-            printf("  %.32s\n", myWallet[wallet_idx].pubkey[i*32]);
+            printf("  %.32s\n", (myWallet[wallet_idx].pubkey)+(i*32));
         }
     } else {
         printf("[!] Can't show pubkey for an empty wallet slot!\n");
@@ -170,7 +176,12 @@ void parseMenu(menuItem *menu, char *cmd_buf) {
             }
         }
     }
-    printf("[!] Unknown command: \"%s\"\n", cmd_buf);
+    if (strlen(cmd_buf) == 0) {
+        //pass
+    } else {
+        printf("[!] Unknown command: \"%s\"\n", cmd_buf);
+        printHelp();
+    }
 }
 
 void printHelp(void) {
