@@ -1,8 +1,25 @@
-#include <stdio.h>
-#include "pico/stdlib.h"
-#include "pico/time.h"
-#include <stdlib.h>
-#include <string.h>
+
+#include "menu.h"
+
+menuItem mainMenu[MAX_MENU_ITEMS] = {
+ {"help", "Prints menu help message", ENABLED, printHelp},
+ {"login", "Login to administrator console", ENABLED, adminLogin},
+ {"mining", "Mine various sidecoins", ENABLED, miningLogin}, // TODO
+ {"TODO2", "flag{test_flag}", DISABLED, NULL}, // TODO
+};
+
+menuItem advancedMenu[MAX_MENU_ITEMS] = {
+ {"help", "Prints menu help message", ENABLED, printHelp},
+ {"logout", "Logout of admin console; return to main menu", ENABLED, adminLogout},
+};
+
+menuItem miningMenu[MAX_MENU_ITEMS] = {
+ {"rugcoin", "Mine some RugCoin", ENABLED, mineRugCoin},
+ {"back", "Go back to main menu", ENABLED, miningLogout},
+};
+
+menuItem *current_menu = mainMenu;
+
 
 
 void adminLogin(void) {
@@ -45,6 +62,14 @@ void adminLogout(void) {
         printf("[+] Logging out of admin console . . .\n\n");
         current_menu = mainMenu;
     }
+}
+
+void miningLogin(void) {
+    current_menu = miningMenu;
+}
+
+void miningLogout(void) {
+    current_menu = mainMenu;
 }
 
 void parseMenu(menuItem *menu, char *cmd_buf) {
@@ -98,21 +123,3 @@ void printStartup(void) {
     printf("\n");
 }
 
-void readInput(char *buf, uint16_t len) {
-    // read `len` bytes into `*buf` or until newline/null is reached 
-    char c;
-    uint16_t i=0;
-
-    if (len > MAX_INPUT_LEN) {
-        len = MAX_INPUT_LEN;
-    }
-    while (1) {
-        c = getchar();
-        if (c != '\n' && c != '\r' && c != '\0' && (i < len-1)) {
-            buf[i++] = c;
-        } else {
-            buf[i] = '\0';
-            break;
-        }
-    }
-}

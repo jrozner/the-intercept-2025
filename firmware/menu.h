@@ -1,6 +1,9 @@
 #ifndef MENU_H
 #define MENU_H
 
+#include "mining.h"
+#include "config.h"
+
 #define MAX_MENU_ITEMS (10)
 
 typedef struct {
@@ -16,21 +19,16 @@ void parseMenu(menuItem *menu, char *cmd_buf);
 void adminLogin(void);
 void adminLogout(void);
 
+void miningLogin(void);
+void miningLogout(void);
+void mineRugCoin(void);
+
 void printStartup(void);
 void printHelp(void);
 
-menuItem mainMenu[MAX_MENU_ITEMS] = {
- {"help", "Prints menu help message", ENABLED, printHelp},
- {"login", "Login to administrator console", ENABLED, adminLogin},
- {"TODO", "Would you like to play a game?", ENABLED, NULL}, // TODO
- {"TODO2", "flag{test_flag}", DISABLED, NULL}, // TODO
-};
-
-menuItem advancedMenu[MAX_MENU_ITEMS] = {
- {"help", "Prints menu help message", ENABLED, printHelp},
- {"logout", "Logout of admin console; return to main menu", ENABLED, adminLogout},
-};
-
-menuItem *current_menu = mainMenu;
+extern menuItem mainMenu[MAX_MENU_ITEMS];
+extern menuItem advancedMenu[MAX_MENU_ITEMS];
+extern menuItem miningMenu[MAX_MENU_ITEMS];
+extern menuItem *current_menu;
 
 #endif

@@ -11,6 +11,9 @@ pico_sdk_init()
 
 add_executable(firmware
   main.c
+  menu.c
+  mining.c
+  config.c
 )
 
 pico_enable_stdio_usb(firmware 1)

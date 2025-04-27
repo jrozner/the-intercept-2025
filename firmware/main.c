@@ -1,12 +1,7 @@
-#include <stdio.h>
-#include "pico/stdlib.h"
-#include "pico/time.h"
-#include <stdlib.h>
-#include <string.h>
 
 #include "config.h"
 #include "menu.h"
-#include "menu.c"
+
 
 int main() {
     stdio_init_all();
