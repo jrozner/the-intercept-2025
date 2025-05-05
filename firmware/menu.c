@@ -19,8 +19,15 @@ menuItem advancedMenu[MAX_MENU_ITEMS] = {
 menuItem miningMenu[MAX_MENU_ITEMS] = {
  {"help", "Prints menu help message", ENABLED, printHelp},
  {"rugcoin", "Mine some RugCoin", ENABLED, mineRugCoin},
- {"inflatocash", "Mine some InflatoCash", ENABLED, mineInflatoCash},
+ {"inflatocash", "Mine some InflatoCash", ENABLED, inflatoLogin},
  {"back", "Go back to main menu", ENABLED, miningLogout},
+};
+
+menuItem inflatoMenu[MAX_MENU_ITEMS] = {
+ {"help", "Prints menu help message", ENABLED, printHelp},
+ {"dump", "Show entire chain", ENABLED, inflatoDump},
+ {"append", "Add a valid mined block", ENABLED, inflatoAppend},
+ {"back", "Go back to main menu", ENABLED, inflatoLogout},
 };
 
 menuItem *current_menu = mainMenu;
@@ -34,6 +41,14 @@ void walletInit(void) {
     // set flag for "flagCoin" - do not remove
     memset(myWallet[3].privkey, 0, MAX_KEY_LEN);
     strcpy(myWallet[3].privkey, "flag{lol_a_fl4g_by_anY_0ther_n4m3}\0");
+    coinInit(4, "inflatoCash");
+    memset(myWallet[4].privkey, 0, MAX_KEY_LEN);
+    memset(myWallet[4].pubkey, 0, MAX_KEY_LEN);
+    strcpy(myWallet[4].privkey, "UMVHSYQDPZBJWXKT\0");
+    strcpy(myWallet[4].pubkey,  "XQPTABZNRLCYWKJE\0");
+
+
+    initMining();
 }
 
 void coinNewKey(char *key_addr) {
@@ -157,6 +172,14 @@ void miningLogin(void) {
 }
 
 void miningLogout(void) {
+    current_menu = mainMenu;
+}
+
+void inflatoLogin(void) {
+    current_menu = inflatoMenu;
+}
+
+void inflatoLogout(void) {
     current_menu = mainMenu;
 }
 
