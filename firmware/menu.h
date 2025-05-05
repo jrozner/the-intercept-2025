@@ -29,8 +29,11 @@ void walletInit(void);
 void coinNewKey(char *key_addr);
 void coinInit(uint8_t wallet_idx, char *name);
 void coinTransfer(cryptoCoin *src, cryptoCoin *dest, uint16_t amount);
+void adminResetPriv(void);
+void adminShowPriv(void);
 void adminResetPub(void);
 void adminShowPub(void);
+void adminResetName(void);
 void adminShowWallets(void);
 
 void adminLogin(void);
@@ -42,8 +45,10 @@ void mineRugCoin(void);
 void inflatoLogin(void);
 void inflatoLogout(void);
 
+void printNah(void);
 void printStartup(void);
 void printHelp(void);
+void printAbout(void);
 
 extern menuItem mainMenu[MAX_MENU_ITEMS];
 extern menuItem advancedMenu[MAX_MENU_ITEMS];

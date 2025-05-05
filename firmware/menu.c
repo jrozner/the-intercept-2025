@@ -5,15 +5,21 @@ menuItem mainMenu[MAX_MENU_ITEMS] = {
  {"help", "Prints menu help message", ENABLED, printHelp},
  {"login", "Login to administrator console", ENABLED, adminLogin},
  {"pub_show", "Show a public key for a given wallet", ENABLED, adminShowPub},
- {"pub_reset", "Reset a public key for a given wallet", ENABLED, adminResetPub},
  {"balance", "Show wallet balances", ENABLED, adminShowWallets},
- {"mining", "Mine various sidecoins", ENABLED, miningLogin}, // TODO
- {"TODO2", "flag{test_flag}", DISABLED, NULL}, // TODO
+ {"mining", "Mine various sidecoins", ENABLED, miningLogin},
+ {"about", "bagHODLr credits", ENABLED, printAbout},
+ {"secret", "flag{y0u_c4nt_s33_m3}", DISABLED, NULL},
 };
 
 menuItem advancedMenu[MAX_MENU_ITEMS] = {
  {"help", "Prints menu help message", ENABLED, printHelp},
- {"logout", "Logout of admin console; return to main menu", ENABLED, adminLogout},
+ {"priv_show", "Show a private key for a given wallet", ENABLED, adminShowPriv},
+ {"priv_reset", "Reset a private key for a given wallet", ENABLED, adminResetPriv},
+ {"pub_show", "Show a public key for a given wallet", ENABLED, adminShowPub},
+ {"pub_reset", "Reset a public key for a given wallet", ENABLED, adminResetPub},
+ {"name_reset", "Reset a name for a given wallet", ENABLED, adminResetName},
+ {"balance", "Show wallet balances", ENABLED, adminShowWallets},
+ {"back", "Go back to main menu", ENABLED, adminLogout},
 };
 
 menuItem miningMenu[MAX_MENU_ITEMS] = {
@@ -114,6 +120,7 @@ void adminResetPub(void) {
     uint8_t wallet_idx = atoi(buf);
     if (wallet_idx >= MAX_WALLETS) {
         printf("[!] Invalid wallet index entered...aborting\n");
+        return;
     }
 
     // regenerate a public key
@@ -125,6 +132,80 @@ void adminResetPub(void) {
     }
 }
 
+void adminResetName(void) {
+    printf("Please enter wallet index to reset NAME:\n");
+    printf(">>> ");
+    char buf[10];
+    readInput(buf, 5);
+    uint8_t wallet_idx = atoi(buf);
+    if (wallet_idx >= MAX_WALLETS) {
+        printf("[!] Invalid wallet index entered...aborting\n");
+        return;
+    }
+    if (strlen(myWallet[wallet_idx].name) == 0) {
+        printf("[!] Can't reset a privkey for an empty wallet slot!\n");
+        return;
+    }
+
+    printf("Please enter a new name for wallet %02u (%s):\n", wallet_idx, myWallet[wallet_idx].name);
+    printf(">>> ");
+    char name_buf[17];
+    memset(name_buf, 0, 17);
+    readInput(name_buf, 17);
+
+    memcpy(myWallet[wallet_idx].name, name_buf, 16);
+    printf("[+] Changed wallet %02u name to %s!\n", wallet_idx, name_buf);
+}
+
+void adminResetPriv(void) {
+    printf("Please enter wallet index to reset PRIVKEY:\n");
+    printf(">>> ");
+    char buf[10];
+    readInput(buf, 5);
+    uint8_t wallet_idx = atoi(buf);
+    if (wallet_idx >= MAX_WALLETS) {
+        printf("[!] Invalid wallet index entered...aborting\n");
+        return;
+    }
+    if (wallet_idx == 3) { // flag coin
+        printNah();
+        return;
+    }
+    // regenerate a private key
+    if (strlen(myWallet[wallet_idx].name) != 0) {
+        coinNewKey(myWallet[wallet_idx].privkey);
+        printf("Wallet slot %02u privkey reset, now:\n  %.30s[...]\n", wallet_idx, myWallet[wallet_idx].privkey);
+    } else {
+        printf("[!] Can't reset a privkey for an empty wallet slot!\n");
+    }
+}
+
+void adminShowPriv(void) {
+    printf("Please enter wallet index to show PRIVKEY:\n");
+    printf(">>> ");
+    char buf[10];
+    readInput(buf, 5);
+    uint8_t wallet_idx = atoi(buf);
+    if (wallet_idx >= MAX_WALLETS) {
+        printf("[!] Invalid wallet index entered...aborting\n");
+        return;
+    }
+    if (wallet_idx == 3) { // flag coin
+        printNah();
+        return;
+    }
+    // show a private key
+    if (strlen(myWallet[wallet_idx].name) != 0) {
+        printf("Wallet slot %02u (%s) privkey:\n", wallet_idx, myWallet[wallet_idx].name);
+        uint8_t i;
+        for (i=0; i<(MAX_KEY_LEN/32); i++) {
+            printf("  %.32s\n", (myWallet[wallet_idx].privkey)+(i*32));
+        }
+    } else {
+        printf("[!] Can't show privkey for an empty wallet slot!\n");
+    }
+}
+
 void adminShowPub(void) {
     printf("Please enter wallet index to show PUBKEY:\n");
     printf(">>> ");
@@ -133,10 +214,11 @@ void adminShowPub(void) {
     uint8_t wallet_idx = atoi(buf);
     if (wallet_idx >= MAX_WALLETS) {
         printf("[!] Invalid wallet index entered...aborting\n");
+        return;
     }
     // show a public key
     if (strlen(myWallet[wallet_idx].name) != 0) {
-        printf("Wallet slot %02u pubkey:\n", wallet_idx);
+        printf("Wallet slot %02u (%s) pubkey:\n", wallet_idx, myWallet[wallet_idx].name);
         uint8_t i;
         for (i=0; i<(MAX_KEY_LEN/32); i++) {
             printf("  %.32s\n", (myWallet[wallet_idx].pubkey)+(i*32));
@@ -216,6 +298,46 @@ void printHelp(void) {
             printf("%08s - %s\n", current_menu[i].name, current_menu[i].description); 
         }
     }
+}
+
+void printAbout(void) {
+    printf("DERPY            _.u[[/;:,.         .odMMMMMM'\n");
+    printf("  CORP        .o888UU[[[/;:-.  .o@P^    MMM^\n");
+    printf("             oN88888UU[[[/;::-.        dP^\n");
+    printf(" TO         dNMMNN888UU[[[/;:--.   .o@P^\n");
+    printf(" THE       ,MMMMMMN888UU[[/;::-. o@^\n");
+    printf(" MOON      f\x08Nl\x08Na\x08Mg\x08M{\x08Mn\x08N0\x08Nw\x088_\x088y\x0880\x08Uu\x08U_\x08[s\x08[3\x08[3\x08/_\x08~m\x08.3\x08o}\x08@\n");
+    printf(" AND       888888888UU[[[/o@^-..\n");
+    printf(" BEYOND   oI8888UU[[[/o@P^:--..\n");
+    printf("       .@^  YUU[[[/o@^;::---..\n");
+    printf("     oMP     ^/o@P^;:::---..\n");
+    printf("  .dMMM    .o@^ ^;::---...\n");
+    printf(" dMMMMMMM@^`       `^^^^\n");
+    printf("YMMMUP^                                PROC\n");
+    printf(" ^^                                     YPRED\n");
+    printf("\n");
+    printf("- - - - DerpyCorp - - - -\n");
+    printf("Since 2019, the proud folks of DerpyCorp have\n");
+    printf("lived up to our company slogan:\n");
+    printf("\"If it's not broken, we'll update it until it is!\"\n");
+    printf("- - - bagHODLr v0.1 - - -\n");
+    printf("buildID 210e5d2e7986d7b6\n");
+    printf("Lead Developers:\n");
+    printf(" JK\n");
+    printf(" datagram\n");
+    printf(" Joe Rozner\n");
+}
+
+void printNah(void) {
+    printf("              ,\n");
+    printf("     __  _.-\"` `'-.\n");
+    printf("    /||\\'._ __{}_(\n");
+    printf("    ||||  |'--.__\\\n");
+    printf("    |  L.(   ^_\\^   NAH\n");
+    printf("    \\ .-' |   _ |      NAH\n");
+    printf("    | |   )\\___/          NAH\n");
+    printf("    |  \\-'`:._]\n");
+    printf("    \\__/;      '-.\n");
 }
 
 void printStartup(void) {
