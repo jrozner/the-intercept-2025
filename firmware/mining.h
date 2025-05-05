@@ -5,6 +5,8 @@
 #include "tiny_md5.h"
 #include "menu.h"
 
+void initMining(void);
+
 void mineRugCoin(void);
 
 void inflatoAppend(void);

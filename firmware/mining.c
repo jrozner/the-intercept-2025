@@ -101,7 +101,7 @@ void hashBlock(Block *block)
     //makeHash(&block->thisHash, block, sizeof(block) - sizeof(block->thisHash) - sizeof(block->prev));
 }
 
-void initMining()
+void initMining(void)
 {
     Block *blocks = (Block *) chain;
 
