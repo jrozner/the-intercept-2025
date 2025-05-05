@@ -39,6 +39,8 @@ void adminLogout(void);
 void miningLogin(void);
 void miningLogout(void);
 void mineRugCoin(void);
+void inflatoLogin(void);
+void inflatoLogout(void);
 
 void printStartup(void);
 void printHelp(void);
@@ -46,6 +48,7 @@ void printHelp(void);
 extern menuItem mainMenu[MAX_MENU_ITEMS];
 extern menuItem advancedMenu[MAX_MENU_ITEMS];
 extern menuItem miningMenu[MAX_MENU_ITEMS];
+extern menuItem inflatoMenu[MAX_MENU_ITEMS];
 extern menuItem *current_menu;
 
 extern cryptoCoin myWallet[MAX_WALLETS];
