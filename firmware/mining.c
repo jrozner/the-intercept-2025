@@ -37,7 +37,7 @@ int generateMath()
     }
 
     printf("\n");
-    printf("answer is %d\n", answer);
+    //printf("answer is %d\n", answer);
 
     return answer;
 }
@@ -66,7 +66,7 @@ void mineRugCoin(void)
         }
         else
         {
-            printf("Incorrect expected %d got %d!\n", answer, atoi(input));
+            printf("Incorrect!\n");
             return;
         }
     }
