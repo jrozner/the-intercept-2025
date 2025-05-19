@@ -1,11 +1,16 @@
-
 #include "config.h"
 #include "menu.h"
-
+#include "otp_helpers.h"
 
 int main() {
     stdio_init_all();
     stdio_flush();
+
+    if(!is_locked()) {
+        lock_otp_secret();
+    }
+
+    lock_sw_lock_48();
 
     char buf[MAX_INPUT_LEN];
     millis_delay(2800); // startup delay so first prints are seen on serial terminal
