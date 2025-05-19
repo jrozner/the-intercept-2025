@@ -64,7 +64,7 @@ add_linker_script(enc_bootloader "0x20070000" "64k")
 pico_set_otp_key_output_file(enc_bootloader ${CMAKE_CURRENT_BINARY_DIR}/otp.json)
 
 # sign, hash, and clear SRAM
-pico_sign_binary(enc_bootloader ${CMAKE_CURRENT_LIST_DIR}/private.pem)
+pico_sign_binary(enc_bootloader ${CMAKE_CURRENT_LIST_DIR}/keys/private.pem)
 pico_hash_binary(enc_bootloader)
 pico_load_map_clear_sram(enc_bootloader)
 
@@ -95,8 +95,12 @@ target_link_libraries(firmware pico_stdlib)
 
 # Signing and hashing
 pico_set_binary_type(firmware no_flash)
+
+add_linker_script(firmware "0x20000000" "448k")
+
 pico_sign_binary(firmware ${CMAKE_CURRENT_SOURCE_DIR}/keys/private.pem)
 pico_hash_binary(firmware)
+pico_encrypt_binary(firmware ${CMAKE_CURRENT_LIST_DIR}/privateaes.bin)
 pico_package_uf2_output(firmware 0x10000000)
 #pico_set_otp_key_output_file(firmware ${CMAKE_CURRENT_LIST_DIR}/otp.json)
 

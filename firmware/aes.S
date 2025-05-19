@@ -7,7 +7,7 @@
 #include "hardware/regs/sha256.h"
 #include "hardware/rcp.h"
 
-#include "config.h"
+#include "bootloader_config.h"
 
 .global delay
 .global aes_start
