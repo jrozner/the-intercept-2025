@@ -1,8 +1,11 @@
+#include "pico/stdlib.h"
+#include "hardware/sync.h"
 #include "config.h"
 #include "menu.h"
 #include "otp_helpers.h"
 
 int main() {
+    enable_interrupts();
     stdio_init_all();
     stdio_flush();
 
@@ -14,7 +17,6 @@ int main() {
 
     char buf[MAX_INPUT_LEN];
     millis_delay(2800); // startup delay so first prints are seen on serial terminal
-    buf[0] = getchar(); // first getchar always null ?
 
     printStartup();
     walletInit();

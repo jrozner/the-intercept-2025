@@ -15,6 +15,8 @@ add_executable(enc_bootloader
         aes.S
         )
 
+pico_enable_stdio_uart(enc_bootloader 1)
+
 # Add command to update otp.json if privateaes.bin changes
 add_custom_command(OUTPUT ${CMAKE_CURRENT_LIST_DIR}/otp.json
     COMMAND ${CMAKE_COMMAND} -P "${CMAKE_CURRENT_LIST_DIR}/update-key.cmake"
